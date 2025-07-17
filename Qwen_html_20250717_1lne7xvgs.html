@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShenandoahTechWorks</title>
+  <script src="https://cdn.tailwindcss.com "></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com ">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --secondary-color: #3b82f6;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fadeIn {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+    
+    .form-message {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+    }
+    
+    .form-success {
+      background-color: #ecfdf5;
+      color: #047857;
+      border-left: 4px solid #10b981;
+    }
+    
+    .form-error {
+      background-color: #fef2f2;
+      color: #991b1b;
+      border-left: 4px solid #ef4444;
+    }
+    
+    .preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, #2563eb, #3b82f6);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease;
+    }
+    
+    .preloader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #2563eb;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 40;
+    }
+    
+    .back-to-top.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+  <!-- Preloader -->
+  <div id="preloader" class="preloader">
+    <div class="text-white text-2xl font-bold flex items-center space-x-2">
+      <svg class="w-8 h-8 animate-spin" viewBox="0 0 24 24" fill="none">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+        <path class="opacity-75" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M4 12a8 8 0 018-8V4M12 20a8 8 0 01-8-8h-0.001"></path>
+      </svg>
+      <span>Loading...</span>
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button id="backToTop" class="back-to-top hidden">
+    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+    </svg>
+  </button>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-700 to-blue-600 text-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center">
+        <svg class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h1 class="text-2xl font-bold">ShenandoahTechWorks</h1>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button id="menuToggle" class="md:hidden focus:outline-none focus:ring-2 focus:ring-white rounded p-1" aria-label="Toggle menu">
+        <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex space-x-6">
+        <a href="#home" class="hover:text-blue-200 transition-all duration-300 font-medium relative group">Home</a>
+        <a href="#services" class="hover:text-blue-200 transition-all duration-300 font-medium relative group">Services</a>
+        <a href="#about" class="hover:text-blue-200 transition-all duration-300 font-medium relative group">About</a>
+        <a href="#contact" class="hover:text-blue-200 transition-all duration-300 font-medium relative group">Contact</a>
+      </nav>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div id="mobileMenu" class="fixed inset-0 bg-blue-700 bg-opacity-95 z-40 hidden flex-col justify-center items-center">
+      <button id="closeMenu" class="absolute top-4 right-4 focus:outline-none">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+      <nav class="flex flex-col items-center space-y-8 text-2xl">
+        <a href="#home" class="hover:text-blue-200 transition-all duration-300 font-medium" onclick="navigateTo('home')">Home</a>
+        <a href="#services" class="hover:text-blue-200 transition-all duration-300 font-medium" onclick="navigateTo('services')">Services</a>
+        <a href="#about" class="hover:text-blue-200 transition-all duration-300 font-medium" onclick="navigateTo('about')">About</a>
+        <a href="#contact" class="hover:text-blue-200 transition-all duration-300 font-medium" onclick="navigateTo('contact')">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8">
+    <!-- Home Section -->
+    <section id="home" class="section">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-5xl font-bold text-blue-800 mb-6 animate-fadeIn">Welcome to ShenandoahTechWorks</h2>
+        <p class="text-lg text-gray-700 mb-10 animate-fadeIn">Your one-stop shop for PC building, repairs, upgrades, and tech support. Serving the Shenandoah Valley with expert service and fast turnaround.</p>
+        <div class="animate-fadeIn">
+          <a href="#contact" class="inline-block bg-blue-600 text-white px-8 py-4 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-1 duration-300">Contact Me</a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+        <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="flex flex-col items-center text-center">
+            <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-6">
+              <svg class="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 3H15M12 3V6M12 21V18M3 12H6M18 12H21M5.64 5.64L7.757 7.757M16.243 16.243L18.36 18.36M5.64 18.36L7.757 16.243M16.243 7.757L18.36 5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">Custom Builds</h3>
+            <p class="text-gray-600">High-performance gaming and workstation PCs built to your specs.</p>
+          </div>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="flex flex-col items-center text-center">
+            <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-6">
+              <svg class="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.01 12C12.01 13.1046 11.1046 14.01 10.01 14.01C8.91544 14.01 8.01 13.1046 8.01 12.01C8.01 10.9154 8.91544 10.01 10.01 10.01C11.1046 10.01 12.01 10.9154 12.01 12.01Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12.01 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12.01 19V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12.01H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 12.01H22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">Repairs</h3>
+            <p class="text-gray-600">Diagnose and fix hardware/software issues quickly and affordably.</p>
+          </div>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="flex flex-col items-center text-center">
+            <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-6">
+              <svg class="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 15L12 21M12 15L15 18M12 15L9 18M12 3V5M12 5V9M12 5L15 7M12 5L9 7M17.6569 17.6569L19 19M19 19L19.9999 21.9999M19 19L17.6569 20.3431M19 19L21 17M19 19L17 21M5.65685 5.65685L5 5M5 5L3 3M5 5L5.65685 3.65685M5 5L3 7M5 5L7 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">Upgrades</h3>
+            <p class="text-gray-600">Upgrade your existing system for better performance and longevity.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="section hidden">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4">Our Services</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">What makes us different</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="flex flex-col items-center text-center">
+            <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-6">
+              <svg class="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 3H15M12 3V6M12 21V18M3 12H6M18 12H21M5.64 5.64L7.757 7.757M16.243 16.243L18.36 18.36M5.64 18.36L7.757 16.243M16.243 7.757L18.36 5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">PC Builds</h3>
+            <p class="text-gray-600">Custom gaming and workstation builds from scratch.</p>
+          </div>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="flex flex-col items-center text-center">
+            <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-6">
+              <svg class="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.01 12C12.01 13.1046 11.1046 14.01 10.01 14.01C8.91544 14.01 8.01 13.1046 8.01 12.01C8.01 10.9154 8.91544 10.01 10.01 10.01C11.1046 10.01 12.01 10.9154 12.01 12.01Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12.01 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12.01 19V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="blank" stroke-linejoin="round"/>
+                <path d="M2 12.01H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 12.01H22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">Laptop & Desktop Repairs</h3>
+            <p class="text-gray-600">Fix broken screens, charging ports, motherboards, and more.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+        <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="flex flex-col items-center text-center">
+            <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-6">
+              <svg class="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 15L12 21M12 15L15 18M12 15L9 18M12 3V5M12 5V9M12 5L15 7M12 5L9 7M17.6569 17.6569L19 19M19 19L19.9999 21.9999M19 19L17.6569 20.3431M19 19L21 17M19 19L17 21M5.65685 5.65685L5 5M5 5L3 3M5 5L5.65685 3.65685M5 5L3 7M5 5L7 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">Software Support</h3>
+            <p class="text-gray-600">Operating system installation, virus removal, and software issues.</p>
+          </div>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="flex flex-col items-center text-center">
+            <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-6">
+              <svg class="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 3H15M12 3V6M12 21V18M3 12H6M18 12H21M5.64 5.64L7.757 7.757M16.243 16.243L18.36 18.36M5.64 18.36L7.757 16.243M16.243 7.757L18.36 5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-3">Hardware Upgrades</h3>
+            <p class="text-gray-600">RAM, SSD, GPU, CPU, and power supply upgrades.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-16 bg-blue-50 p-8 rounded-xl">
+        <h3 class="text-2xl font-bold text-blue-800 mb-4">Why Choose Us?</h3>
+        <ul class="grid grid-cols-1 gap-4 text-gray-700">
+          <li class="flex items-start">
+            <svg class="w-6 h-6 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Local expert with deep knowledge of technology
+          </li>
+          <li class="flex items-start">
+            <svg class="w-6 h-6 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Fast turnaround times for repairs and builds
+          </li>
+          <li class="flex items-start">
+            <svg class="w-6 h-6 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Competitive pricing with no hidden fees
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section hidden">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4">About Justin</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          My name is Justin, I'm 16 years old, and I love working with computers.
+        </p>
+      </div>
+      
+      <div class="max-w-3xl mx-auto">
+        <div class="grid grid-cols-1 gap-12">
+          <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300">
+            <h2 class="text-3xl font-bold mb-6">My Story</h2>
+            <p class="text-lg text-gray-700 mb-6">
+              Founded in 2025 by me at 16 years old, ShenandoahTechWorks was created to help others with computer building and repair services.
+            </p>
+            <p class="text-lg text-gray-700 mb-6">
+              I've always had a passion for technology and problem-solving. Whether you're a gamer, student, or professional, I can help with your tech needs.
+            </p>
+            <p class="text-lg text-gray-700">
+              My mission is to provide fast, reliable, and affordable tech services while continuing to learn and grow my skills.
+            </p>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-center p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
+              <div class="bg-blue-100 rounded-full p-3 mr-4">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-bold">Young & Passionate</h4>
+                <p class="text-sm text-gray-600">Dedicated to learning and growth</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
+              <div class="bg-blue-100 rounded-full p-3 mr-4">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-bold">Fast Turnaround</h4>
+                <p class="text-sm text-gray-600">Quick service, minimal downtime</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section hidden">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4">Contact Justin</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Have a question or need help with your computer? Use the form below to get in touch.
+        </p>
+      </div>
+      
+      <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-lg">
+        <!-- Google Form Embed -->
+        <iframe 
+          class="w-full h-screen rounded-lg shadow-md"
+          src=" https://docs.google.com/forms/d/e/1ffE4yvvIiMRg4ynziRW-f5hNaiijnGVcfebYekJbV6E/viewform?embedded=true"
+          frameborder="0"
+          marginheight="0"
+          marginwidth="0"
+          scrolling="no"
+          style="border: none; min-height: 500px;"
+        >
+        </iframe>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-r from-blue-700 to-blue-600 text-white py-12 mt-16">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <div class="flex items-center mb-4">
+            <svg class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h2 class="text-xl font-bold">ShenandoahTechWorks</h2>
+          </div>
+          <p class="mb-4 text-blue-100">
+            Providing high-quality computer services to the Shenandoah Valley since 2025.
+          </p>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-4">Contact Information</h3>
+          <ul class="space-y-2">
+            <li class="flex items-center">
+              <svg class="w-5 h-5 mr-2 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0l7.89-5.26M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              <span>shenandoahtechworks@gmail.com</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 mr-2 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"></path>
+              </svg>
+              <span>(540) 624-7823</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-blue-800 mt-8 pt-8 text-center text-sm text-blue-200">
+        <p>&copy; 2025 ShenandoahTechWorks. All rights reserved.</p>
+      </div>
+    </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Navigation handling
+    const sections = document.querySelectorAll('.section');
+    const navLinks = document.querySelectorAll('a[href^="#"]');
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    function navigateTo(sectionId) {
+      sections.forEach(section => {
+        section.classList.add('hidden');
+      });
+      
+      document.getElementById(sectionId).classList.remove('hidden');
+      history.pushState(null, '', `#${sectionId}`);
+      
+      // Close mobile menu
+      mobileMenu.classList.add('hidden');
+    }
+    
+    // Intersection Observer for fade-in effect
+    const observerOptions = {
+      root: null,
+      threshold: 0.1,
+      rootMargin: "0px 0px 0px 0px"
+    };
+    
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fadeIn');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+    
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    
+    // Handle initial page load
+    window.addEventListener('load', () => {
+      const hash = window.location.hash.substring(1) || 'home';
+      navigateTo(hash);
+      
+      // Update active nav link
+      navLinks.forEach(link => {
+        link.classList.remove('text-blue-200');
+        if (link.getAttribute('href') === `#${hash}`) {
+          link.classList.add('text-blue-200');
+        }
+      });
+    });
+    
+    // Handle back/forward navigation
+    window.addEventListener('popstate', () => {
+      const hash = window.location.hash.substring(1) || 'home';
+      navigateTo(hash);
+    });
+    
+    // Handle nav link clicks
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sectionId = link.getAttribute('href').substring(1);
+        navigateTo(sectionId);
+      });
+    });
+    
+    // Mobile menu toggle
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+    
+    document.getElementById('closeMenu').addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    });
+    
+    // Preloader
+    window.addEventListener('load', () => {
+      document.getElementById('preloader').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    });
+    
+    // Back to top button
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+    });
+    
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
